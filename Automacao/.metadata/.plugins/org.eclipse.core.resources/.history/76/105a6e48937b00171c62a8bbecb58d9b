@@ -1,0 +1,56 @@
+package br.org.cpb.PO;
+
+import org.openqa.selenium.By;
+
+import com.thoughtworks.selenium.webdriven.commands.Click;
+
+import br.org.cpb.UTIL.PaginaBase;
+import br.org.cpb.UTIL.TestUtil;
+
+ 
+
+public class RetificarProvasPO extends PaginaBase {
+	
+	TestUtil util = new TestUtil(driver);
+	
+	public RetificarProvasPO(){
+		super(driver);
+	}
+	
+	
+	public void retificarProva() throws InterruptedException{
+		
+		int num = 2;
+		
+		driver.findElement(By.id("home:eventosInscricaoFinalizada:0:btnSelecionarEvento")).click();
+		Thread.sleep(1000);
+		//Acessar o menu consulta
+		driver.findElement(By.xpath("/html/body/div[3]/form/div/ul/li[4]/a/span[2]")).click();
+		
+		for(num=0 ; num <= 2 ; num++){
+            
+		Thread.sleep(1000);
+		util.slcCmbByeTexto(By.id("listaProvasPesquisadas:statusSerie"), "RESULTADO OFICIAL");
+		
+		Thread.sleep(1000);
+		driver.findElement(By.id("listaProvasPesquisadas:btnPesquisar")).click();
+		
+		Thread.sleep(1000);
+		driver.findElement(By.id("listaProvasPesquisadas:provasPesquisadas:0:btnRetificarResultados")).click();
+		
+		Thread.sleep(1000);
+		driver.findElement(By.id("formRetificacaoResultadosField:btnFinalizar")).click();
+		
+		Thread.sleep(1000);
+		driver.findElement(By.id("formRetificacaoResultadosField:btnFinalizar")).click();
+		
+		Thread.sleep(1000);
+		driver.findElement(By.id("formRetificacaoResultadosField:confirm")).click();
+		
+		Thread.sleep(1000);
+		driver.findElement(By.id("formRetificacaoResultadosField:confirm")).click();
+		
+		 }
+	}
+
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;CPB_AUTOMACAO/Drivers/chromedriver.exe&apos; to &apos;chromedriver.exefgj&apos;" description="Rename resource &apos;chromedriver.exe&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Drivers/chromedriver.exe" name="chromedriver.exefgj" stamp="1491934755652" updateReferences="true"/>
+</session>

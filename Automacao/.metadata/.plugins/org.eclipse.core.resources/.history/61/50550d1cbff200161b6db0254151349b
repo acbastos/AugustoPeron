@@ -1,0 +1,28 @@
+package br.org.cpb.PO;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+import com.thoughtworks.selenium.webdriven.commands.IsElementPresent;
+
+public class LoginPO {
+
+	private WebDriver driver;
+	
+	
+	public LoginPO(WebDriver driver){
+		
+	}
+	
+    
+	public void realizarLogin(){
+		
+		driver.findElement(By.id("usuario")).clear();
+	    driver.findElement(By.id("usuario")).sendKeys("Danillo");
+	    driver.findElement(By.id("senha")).clear();
+	    driver.findElement(By.id("senha")).sendKeys("1");
+	    driver.findElement(By.xpath("//button[@type='submit']")).click();
+	    	
+	}
+	
+}

@@ -1,0 +1,39 @@
+package br.org.cpb.PO;
+
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import br.org.cpb.UTIL.PaginaBase;
+
+import com.thoughtworks.selenium.webdriven.commands.IsElementPresent;
+
+public class LoginPO extends PaginaBase{
+	
+	//private WebDriver driver;
+
+	public LoginPO(){
+		super(driver);
+	}
+	
+	public void realizarLogin(String usuario, String senha ){
+		
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		System.out.println(driver.getTitle());
+		//Preenchendo campo usuario
+		driver.findElement(By.id("usuario")).clear();
+	    driver.findElement(By.id("usuario")).sendKeys(usuario);
+	    //Preenchendo campo senha
+	    driver.findElement(By.id("senha")).clear();
+	    driver.findElement(By.id("senha")).sendKeys(senha);
+	    //Clicando no notão login
+	    driver.findElement(By.xpath("//button[@type='submit']")).click();
+	    
+	    //Validando login com sucesso
+	    Assert.assertEquals("Início" , driver.findElement(By.xpath("//span[@class='ui-menuitem-text']")).getText());	
+	}
+	
+}

@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Delete resource &apos;workshop-agile-testing-tdc&apos;" deleteContents="false" description="Delete resource &apos;workshop-agile-testing-tdc&apos;" element1="/workshop-agile-testing-tdc" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1486986385924"/>&#x0A;<refactoring comment="Rename resource &apos;CPB&apos; to &apos;CPB_AUTOMACAO&apos;" description="Rename resource &apos;CPB&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/CPB" name="CPB_AUTOMACAO" stamp="1487080090852" updateReferences="true"/>
+</session>

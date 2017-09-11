@@ -1,0 +1,779 @@
+package br.org.cpb.util;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.nio.channels.FileChannel;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import jxl.Sheet;
+import jxl.Workbook;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+
+import de.svenjacobs.loremipsum.LoremIpsum;
+
+/**
+ * Classe com m�todos uteis para criar arquivos texto e ler planilhas excel com massa de teste
+ *
+ * @author mjlcalmeida
+ */
+public class MassaUtil {
+
+    private static int sequence;
+    private String caminhoMassaDeTeste;
+    private java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
+            "dd/MM/yyyy");
+
+
+    //======================== Receber Somente Numeros =======================================
+
+    public static boolean isNumber(String numero) {
+        try {
+            return isBigDecimal(numero);
+        } catch (RuntimeException exception) {
+            return false;
+        }
+    }
+
+    public static boolean isBigDecimal(String numero) {
+        try {
+            new BigDecimal(numero);
+            return true;
+        } catch (RuntimeException exception) {
+            return false;
+        }
+    }
+
+    public String manterNumeros(String str) {
+        StringBuilder s = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            if (isNumber(String.valueOf(str.charAt(i)))) {
+                s.append(str.charAt(i));
+            }
+        }
+        return s.toString();
+    }
+
+
+    //======================== Textos =======================================
+
+    /**
+     * Gera um n�mero aleat�rio com ano, mes, dia, hora minuto e segundos atual.
+     *
+     * @return
+     */
+    public String gerarNumeroAleatorio() {
+            /*
+             * Esse sleep � para garantir que threads concorrentes
+	         * sempre ir�o gerar n�meros diferentes.
+	         * 
+	         * Como a menor unidade de forma��o do n�mero � o segundo,
+	         * essa l�gica tem que durar pelo menos 1 segundo para
+	         * que a thread seguinte gere um n�mero diferente.
+	         */
+        try {
+            Thread.sleep(1000L); // 1 segundo
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        Calendar dataAtual = Calendar.getInstance();
+        //pegar os valores de cada se��o, com exce��o do digito verificador
+        Integer anoAsInt = dataAtual.get(Calendar.YEAR);
+        Integer mesAsInt = dataAtual.get(Calendar.MONTH) + 1;
+        Integer diaAsInt = dataAtual.get(Calendar.DAY_OF_MONTH);
+        Integer horaAsInt = dataAtual.get(Calendar.HOUR_OF_DAY);
+        Integer minutoAsInt = dataAtual.get(Calendar.MINUTE);
+        Integer segundoAsInt = dataAtual.get(Calendar.SECOND);
+//	        Integer numeroAleatorioAsInt = random.nextInt(999) + 1;
+
+        //transformar em String completando com zeros a esquerda quando necess�rio
+        String anoAsString = anoAsInt.toString();
+        String mesAsString = mesAsInt.toString();
+        String diaAsString = diaAsInt.toString();
+        String horaAsString = horaAsInt.toString();
+        String minutoAsString = minutoAsInt.toString();
+        String segundoAsString = segundoAsInt.toString();
+//	        String numeroAleatorioAsString = numeroAleatorioAsInt.toString();
+
+        //concatenar toda as se��es pra formar o n�mero completo, ainda sem o digito verificador.
+        String numeroFinalSemDigitoVerificador = anoAsString + mesAsString + diaAsString + horaAsString + minutoAsString + segundoAsString;
+
+
+        return numeroFinalSemDigitoVerificador;
+    }
+
+    /**
+     * Retorna o n�mero do mes atual em forma de String.
+     * Ex: mes atual Maio, retorna 5;
+     *
+     * @return
+     */
+    public String getNumeroMesAtual() {
+        Calendar dataAtual = Calendar.getInstance();
+        Integer mesAsInt = dataAtual.get(Calendar.MONTH) + 1;
+        return mesAsInt.toString();
+    }
+
+    /**
+     * Retorna o Ano atual em forma de String.
+     *
+     * @return
+     */
+    public String getAnoAtual() {
+        Calendar dataAtual = Calendar.getInstance();
+        Integer mesAsInt = dataAtual.get(Calendar.YEAR);
+        return mesAsInt.toString();
+    }
+
+    /**
+     * Retorna o n�mero do mes atual em forma de String, ou incrementa ou descrementa o mes atual
+     * de acordo com o n�mero passado.
+     * Ex: getMesAtual(-2) retorna, se o mes atual for maio (5) -2 retona mar�o;
+     * Caso e n�mero passado somado ao atual de mais que 12 meses o metodo ir� retornar o n�mero de meses.
+     * Ex: mes atual 6 se for passado 7, ir� retorna 13.
+     *
+     * @param n
+     * @return
+     */
+    public String getNumeroMesAtual(Integer n) {
+        if (n == null) {
+            n = 1;
+        } else {
+            n = n + 1;
+        }
+        Calendar dataAtual = Calendar.getInstance();
+        Integer mesAsInt = dataAtual.get(Calendar.MONTH) + n;
+        return mesAsInt.toString();
+    }
+
+    public String horaAtual() {
+        Date date = new Date();
+        DateFormat formato = new SimpleDateFormat("HHmmss");
+        String formattedDate = formato.format(date);
+        return formattedDate;
+    }
+
+    /**
+     * Retorna o Ano atual em forma de String, ou incrementa ou descrementa o atual
+     * de acordo com o n�mero passado.
+     *
+     * @param n
+     * @return
+     */
+    public String getAnoAtual(Integer n) {
+        if (n == null) {
+            n = 0;
+        }
+        Calendar dataAtual = Calendar.getInstance();
+        Integer mesAsInt = dataAtual.get(Calendar.YEAR) + n;
+        return mesAsInt.toString();
+    }
+
+    public String getdataAtualAnosAfrente(Integer n) {
+        if (n == null) {
+            n = 0;
+        }
+        Calendar dataAtual = Calendar.getInstance();
+        Integer diaAsInt = dataAtual.get(Calendar.DAY_OF_MONTH);
+        Integer mesAsInt = dataAtual.get(Calendar.MONTH) + 1;
+        Integer anoAsInt = dataAtual.get(Calendar.YEAR) + n;
+        if(diaAsInt >= 10){
+        String dataAtualAnoVariado = diaAsInt.toString() + mesAsInt.toString() + anoAsInt.toString();
+        return dataAtualAnoVariado;
+        }
+        else{
+        	String dias = Integer.toString(diaAsInt);
+        	dias = "0" + dias;
+        	String dataAtualAnoVariado = dias + mesAsInt.toString() + anoAsInt.toString();
+            return dataAtualAnoVariado;
+        }
+    }
+
+    /**
+     * Gera um n�mero aleat�rio de 5 d�gitos
+     *
+     * @return
+     */
+    public String gerarNumeroAleatorio2() {
+        Integer num = (int) (Math.random() * 57541045);
+        return num.toString();
+    }
+
+    /**
+     * Gera um n�mero aleat�rio com os segundos atual.
+     *
+     * @return
+     */
+    public String gerarNumeroAleatorio3() {
+
+
+        Calendar dataAtual = Calendar.getInstance();
+        Integer segundoAsInt = dataAtual.get(Calendar.SECOND);
+
+        return segundoAsInt.toString();
+    }
+
+    /**
+     * Gera textos aleat�rios com 20 palavras
+     *
+     * @return String com o texto gerado
+     */
+
+    public String geraTexto() {
+        LoremIpsum lorem = new LoremIpsum();
+        int n;
+        do {
+            n = (int) (Math.random() * 50);
+        } while (n < 0 || n > 49);
+
+        return lorem.getWords(20, n);
+    }
+
+    /**
+     * Gera texto curto aleat�rio com 2 palavras, por�m pode haver
+     * certa repeti��o deste com certa frequencia
+     *
+     * @return String com o texto gerado
+     */
+    public String geraTextoCurto() {
+        LoremIpsum lorem = new LoremIpsum();
+        int n;
+        do {
+            n = (int) (Math.random() * 50);
+        } while (n < 0 || n > 49);
+
+        return removerPontuacao(lorem.getWords(2, n));
+    }
+
+    /**
+     * Gera texto com o n�mero de palavras passado
+     *
+     * @param numeroPalavras de Palavras a ser gerada.
+     * @return String com o texto gerado
+     */
+    public String geraTexto(int numeroPalavras) {
+        LoremIpsum lorem = new LoremIpsum();
+        int n;
+        do {
+            n = (int) (Math.random() * 50);
+        } while (n < 0 || n > 49);
+
+        return lorem.getWords(numeroPalavras, n);
+    }
+
+    /**
+     * Gera Nome aleat�rios com 4 palavras, por�m pode haver
+     * certa repeti��o deste com certa frequencia
+     *
+     * @return String com o nome gerado
+     */
+    public String geraNomePessoa() {
+        LoremIpsum lorem = new LoremIpsum();
+        int n;
+        do {
+            n = (int) (Math.random() * 70);
+        } while (n < 0 || n > 49);
+        String nome = lorem.getWords(5, n);
+
+        return removerPontuacao(nome);
+    }
+
+    /**
+     * Gera Nome aleat�rios com 2 palavras, por�m pode haver
+     * certa repeti��o deste com certa frequencia
+     *
+     * @return String com o nome gerado
+     */
+    public String geraNomePessoa2palavras() {
+        LoremIpsum lorem = new LoremIpsum();
+        int n;
+        do {
+            n = (int) (Math.random() * 70);
+        } while (n < 0 || n > 49);
+        String nome = lorem.getWords(2, n);
+
+        return removerPontuacao(nome);
+    }
+
+    /**
+     * Gera Nome aleat�rios com 1 palavras.
+     *
+     * @return String com o nome gerado
+     */
+    public String geraNomePessoa1palavra() {
+        LoremIpsum lorem = new LoremIpsum();
+        int n;
+        do {
+            n = (int) (Math.random() * 70);
+        } while (n < 0 || n > 49);
+        String nome = lorem.getWords(1, n);
+
+        return removerPontuacao(nome);
+    }
+
+    /**
+     * Gera Calculo com no base de 70000 randomico, para o valor do contrato Mensal.
+     *
+     * @return int com numero randomico
+     */
+    public Integer gerarCalculoMensal() {
+        int n;
+        do {
+            n = (int) (Math.random() * 700000);
+        } while (n < 0 || n > 170000);
+
+        return n;
+    }
+
+
+    /**
+     * Gera Calculo com no base de 170 horas mensais randomico, para horas trabalhadas.
+     * Com no minimo 80 horas mensais, que s�o 4 horas diarias.
+     *
+     * @return int com numero randomico
+     */
+    public Integer gerarCalculoHorasMensal() {
+        int n;
+        do {
+            n = (int) (Math.random() * 700);
+        } while (n <= 80 || n > 170);
+
+        return n;
+    }
+
+    /**
+     * Gera Calculo com no base de 8 horas mensais randomico, para horas trabalhadas.
+     * Com no minimo 4 horas diarias.
+     *
+     * @return int com numero randomico
+     */
+    public Integer gerarCalculoHorasDiarias() {
+        int n;
+        do {
+            n = (int) (Math.random() * 700);
+        } while (n <= 3 || n > 8);
+
+        return n;
+    }
+
+    /**
+     * Remove os caracteres de pontua��o.
+     *
+     * @param frase Frase que ter� as pontua��es removidas.
+     * @return Frase sem pontua��es.
+     */
+    public String removerPontuacao(String frase) {
+        if (frase == null) return frase;
+        return frase.replaceAll("[-!,.:;?/]", "")
+                .replace("\b\t\n\f\r\"\'\\", "");
+    }
+
+    //======================== Datas =======================================
+
+    /**
+     * Retorna a data atual +N ou -N dias conforme passado no par�metro no formato ddMMyyyy
+     */
+    public String calculaData(int qtDias) {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_YEAR, qtDias);
+        java.sql.Date d = new java.sql.Date(c.getTimeInMillis());
+        return sdf.format(d).toString();
+    }
+
+    /**
+     * Retorna a data atual +N ou -N dias conforme passado no par�metro no formato passado
+     * Exemplo: data("dd-MM-yyyy");<P>
+     * EXEMPLOS DE FORMATA��ES:<P>
+     * "yyyy.MM.dd G 'at' HH:mm:ss z" 2001.07.04 AD at 12:08:56 PDT
+     * "EEE, MMM d, ''yy" Wed, Jul 4, '01 "h:mm a" 12:08 PM
+     * "hh 'o''clock' a, zzzz" 12 o'clock PM, Pacific Daylight Time "K:mm a, z"
+     * 0:08 PM, PDT "yyyyy.MMMMM.dd GGG hh:mm aaa" 02001.July.04 AD 12:08 PM
+     * "EEE, d MMM yyyy HH:mm:ss Z" Wed, 4 Jul 2001 12:08:56 -0700
+     */
+    public String calculaDataFormata(int qtDias, String formato) {
+
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_YEAR, qtDias);
+        java.sql.Date d = new java.sql.Date(c.getTimeInMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat(formato);
+        return sdf.format(d).toString();
+    }
+
+
+    /**
+     * Retorna proxima data UTIL conforme data atual +N conforme parametro
+     *
+     * @param qtDias Quantidade dias a somar no formado Mon Mar 10 10:40:31 BRT 2014
+     */
+    public Date retornaDataUtil(int qtDias) {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_YEAR, qtDias);
+        if (c.get(Calendar.DAY_OF_WEEK) == 1 || c.get(Calendar.DAY_OF_WEEK) == 7) {
+            c.add(Calendar.DAY_OF_YEAR, 2);
+        }
+        return new java.util.Date(c.getTimeInMillis());
+    }
+
+    /**
+     * Retorna proxima data UTIL conforme data atual +N conforme parametro
+     *
+     * @param qtDias Quantidade dias a somar no formato dd/mm/aaaa
+     */
+    public String retornaDataUtilFormatada(int qtDias) {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_YEAR, qtDias);
+        if (c.get(Calendar.DAY_OF_WEEK) == 1 || c.get(Calendar.DAY_OF_WEEK) == 7) {
+            c.add(Calendar.DAY_OF_YEAR, 2);
+        }
+        return sdf.format(new java.util.Date(c.getTimeInMillis()));
+    }
+
+    /**
+     * Retorna data atual sem m�scara.
+     * ex: "17022011"
+     */
+    public String getDataAtual() {
+        String retornoDate = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+        Calendar c = Calendar.getInstance();
+        retornoDate = sdf.format(c.getTime()).toLowerCase();
+        return retornoDate;
+    }
+
+    /**
+     * data(parametro): Serve para retornar a data do dia no formato passado no
+     * par�metro.<P>
+     * Exemplo: data("dd-MM-yyyy");<P>
+     * EXEMPLOS DE FORMATA��ES:<P>
+     * "yyyy.MM.dd G 'at' HH:mm:ss z" 2001.07.04 AD at 12:08:56 PDT
+     * "EEE, MMM d, ''yy" Wed, Jul 4, '01 "h:mm a" 12:08 PM
+     * "hh 'o''clock' a, zzzz" 12 o'clock PM, Pacific Daylight Time "K:mm a, z"
+     * 0:08 PM, PDT "yyyyy.MMMMM.dd GGG hh:mm aaa" 02001.July.04 AD 12:08 PM
+     * "EEE, d MMM yyyy HH:mm:ss Z" Wed, 4 Jul 2001 12:08:56 -0700
+     */
+    public String getDataAtualFormata(String formato) {
+        SimpleDateFormat sdf = new SimpleDateFormat(formato);
+        return sdf.format(new java.util.Date());
+    }
+
+    //======================== Hora ======================
+
+    /**
+     * Calculahora(Param1, Param2): Soma ou Subtrai uma hora a partir de uma
+     * hora informada.
+     * <p/>
+     * Param1: A Hora inicial informada. Deve ser String no formato "HH:mm:ss"
+     * Param2: N�mero de minutos para somar ou subtrair, caso queira subtrair
+     * informar o par�metro Param2 negativo.
+     * <p/>
+     * Exemplo : String HoraCalculada = Calculahora("15:34:00", 32);<p>
+     * Exemplo2: String HoraCalculada = Calculahora("15:34:00", -10);
+     */
+    public String calculaHora(String param1, int param2) throws ParseException {
+        int qtMinutes = param2;
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
+                "HH:mm:ss");
+        java.util.Date tempo = new java.util.Date();
+        tempo = sdf.parse(param1);
+        Calendar c = Calendar.getInstance();
+        c.setTime(tempo);
+        c.add(Calendar.MINUTE, qtMinutes);
+        java.sql.Date d = new java.sql.Date(c.getTimeInMillis());
+        return (sdf.format(d));
+    }
+    //=======================================================================
+
+    //=========================== Arquivos TXT ==================================
+
+    /**
+     * EscreveArquivoApp(Par�metro1, Par�metro2): Serve para escrever em um
+     * arquivo texto (.txt). S�o dois par�metros. O primeiro � o caminho e o
+     * nome do arquivo o segundo � o conte�do que ser� escrito no arquivo Veja
+     * exemplo: EscreveArquivoApp("C:\\TesteData.txt", "Ol� Mundo");
+     * <p/>
+     * <b>Obs.:</b> O m�todo foi contru�do para fazer append (adicionar) no arquivo.
+     */
+    public void adicionaNoArquivoApp(String path, String conteudo) throws Exception {
+        FileWriter fileWriter = new FileWriter(path, true);
+        PrintWriter writer = new PrintWriter(fileWriter);
+        writer.println(conteudo);
+        writer.close();
+    }
+
+    /**
+     * *******************************************************************
+     * EscreveArquivo(Par�metro1, Par�metro2): Serve para escrever em um arquivo
+     * texto (.txt). S�o dois par�metros. O primeiro � o caminho e o nome do
+     * arquivo o segundo � o conte�do que ser� escrito no arquivo Veja exemplo:
+     * EscreveArquivo("C:\\TesteData.txt", "Ol� Mundo");
+     * <p/>
+     * <p><b>Obs.:</b> O m�todo foi contru�do para criar <b>toda vez um dado �nico no
+     * arquivo</b>, ou seja, o que existia neste ser� perdido.
+     */
+    public void escreveNovoArquivo(String path, String conteudo) throws Exception {
+        FileWriter fileWriter = new FileWriter(path, false);
+        PrintWriter writer = new PrintWriter(fileWriter);
+        writer.println(conteudo);
+        writer.close();
+    }
+
+    /**
+     * *******************************************************************
+     * lerArquivo(Par�metro): Serve para ler um arquivo texto (.txt) e retornar
+     * o conte�do.
+     * Passe como par�metro o caminho e nome do arquivo que ser� lido.
+     */
+    public String lerArquivo(String nomeArq) {
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(nomeArq));
+            String str = "";
+            while (in.ready()) {
+                str.concat(in.readLine());
+            }
+            in.close();
+            return str;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    //====================================================================
+
+
+    //======================= Arquivos XLS ===============================
+
+    /**
+     * copiaArquivo(parametro1, parametro2 ): Copia arquivo origem para destino
+     * <p/>
+     * Exemplo: copiaArquivo("C:\\teste.xls", "C:\\teste2.xls");
+     */
+    public void copiaArquivo(String endorigem, String enddestino) throws IOException {
+        FileInputStream origem;
+        FileOutputStream destino;
+        FileChannel fcOrigem;
+        FileChannel fcDestino;
+
+        origem = new FileInputStream(endorigem);
+        destino = new FileOutputStream(enddestino);
+
+        fcOrigem = origem.getChannel();
+        fcDestino = destino.getChannel();
+        fcOrigem.transferTo(0, fcOrigem.size(), fcDestino);
+
+        origem.close();
+        destino.close();
+    }
+
+
+    /**
+     * *******************************************************************
+     * Ler os dados de uma planilha Excel,<p>
+     * <p/>
+     * Exemplo: Conteudo = LerPlanilha("aba 1", 2, 4);
+     */
+    public String lerDadosPlanilha(String plan, int linha, int coluna) {
+        String caminho = caminhoMassaDeTeste;
+        if (caminhoMassaDeTeste != null) {
+            File fp = new File(caminho);
+            try {
+                Workbook wb = Workbook.getWorkbook(fp);
+                Sheet aba = wb.getSheet(plan);
+                return aba.getCell(coluna - 1, linha - 1).getContents().toString();
+            } catch (Exception ioe) {
+                ioe.printStackTrace();
+                new RuntimeException();
+                return null;
+            }
+        } else {
+            System.out.println("\n\n ==> Caminho do arquivo da massa de teste n�o definido.\n\n");
+            return null;
+        }
+    }
+
+    /**
+     * *******************************************************************
+     * Manterdadosplanilha(Param1, Param2, Param3, Param4): inclui dados
+     * em uma planilha. Onde: Param1 = Nome
+     * da Aba Param2 = Linha Param3 = Coluna Param4 = Conte�do
+     */
+    public synchronized void manterdadosPlanilha(String aba, int linha, int coluna,
+                                                 String conteudo) {
+
+        if (caminhoMassaDeTeste != null) {
+            conteudo = "" + conteudo;
+            try {
+
+                coluna = coluna - 1;
+
+                HSSFWorkbook workbook = new HSSFWorkbook(new FileInputStream(caminhoMassaDeTeste));
+                HSSFSheet sheet = workbook.getSheet(aba);
+
+                Cell cell = sheet.getRow(linha).getCell(coluna);
+                cell.setCellValue(conteudo);
+
+                FileOutputStream stream = new FileOutputStream(caminhoMassaDeTeste);
+                workbook.write(stream);
+                stream.flush();
+                stream.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                new RuntimeException();
+            }
+        } else {
+            System.out.println("\n\n ==> Caminho do arquivo da massa de teste n�o definido.\n\n");
+        }
+    }
+
+    /**
+     * *******************************************************************
+     * Arquivosdir(Param1): Retorna um array com os arquivos de um Diret�rio
+     * especificado no Param1.
+     */
+    public String[] arquivosDir(String param1) {
+        String[] listaArq = null;
+        String Lista = "";
+        File diretorio = new File(param1);
+        File[] arquivos = diretorio.listFiles();
+
+        if (arquivos != null) {
+            for (int i = 0; i < arquivos.length; ++i) {
+                File f = arquivos[i];
+                if (f.isFile()) {
+                    Lista = Lista + f.getName() + ",";
+                }
+            }
+        }
+        return Lista.split(",");
+    }
+
+
+    /**
+     * *******************************************************************
+     * Email(Param1, Param2, Param3, Param4): Envia um E-mail com anexo (se for
+     * o caso). Deve informar os seguintes par�metros: Param1: De Param2: Para
+     * Param3: Assunto Param4: Conteudo da Mensagem Param5: Caminho e nome do
+     * arquivo
+     */
+//    public void enviaEmail(String para, String assunto,
+//                           String mensagem, String path) {
+//        String to = para;
+//        String from = "";
+//        String subject = assunto;
+//        String msgText1 = mensagem;
+//        String filename = path;
+//
+//        String host = "smtp.localhost";
+//        Properties props = System.getProperties();
+//        props.put("mail.smtp.host", host);
+//
+//        Session session = Session.getInstance(props, null);
+//
+//        try {
+//            MimeMessage msg = new MimeMessage(session);
+//            msg.setFrom(new InternetAddress(from));
+//            InternetAddress[] address = {new InternetAddress(to)};
+//            msg.setRecipients(Message.RecipientType.TO, address);
+//            msg.setSubject(subject);
+//
+//            MimeBodyPart mbp1 = new MimeBodyPart();
+//            mbp1.setText(msgText1);
+//            MimeBodyPart mbp2 = new MimeBodyPart();
+//
+//            FileDataSource fds = new FileDataSource(filename);
+//            mbp2.setDataHandler(new DataHandler(fds));
+//            mbp2.setFileName(fds.getName());
+//
+//            Multipart mp = new MimeMultipart();
+//            mp.addBodyPart(mbp1);
+//            mp.addBodyPart(mbp2);
+//
+//            msg.setContent(mp);
+//            msg.setSentDate(new Date());
+//
+//            Transport.send(msg);
+//
+//        } catch (MessagingException mex) {
+//            mex.printStackTrace();
+//            Exception ex = null;
+//            if ((ex = mex.getNextException()) != null) {
+//                ex.printStackTrace();
+//            }
+//        }
+//    }
+
+    /**
+     * Gera CPF com m�scara (14 d�gitos)
+     *
+     * @return
+     */
+    public String getCPFComMascara() {
+        GeradoraCPF g = new GeradoraCPF();
+        return g.geraCPFComMask();
+    }
+
+    /**
+     * Gera CPF sem m�scara (11 d�gitos)
+     *
+     * @return
+     */
+    public String getCPFSemMascara() {
+        GeradoraCPF g = new GeradoraCPF();
+        return GeradoraCPF.geraCPFSemMask();
+    }
+
+    /**
+     * Gera CPNJ com M�scara
+     *
+     * @return
+     */
+    public String getCNPJComMascara() {
+        GeradoraCNPJ cnpj = new GeradoraCNPJ();
+        return cnpj.geraCNPJComMask();
+    }
+
+    /**
+     * Gera CPNJ Sem M�scara
+     *
+     * @return
+     */
+    public String getCNPJSemMascara() {
+        GeradoraCNPJ cnpj = new GeradoraCNPJ();
+        return cnpj.geraCNPJSemMask();
+    }
+
+    /**
+     * Gera CNPJ com M�scara
+     *
+     * @return
+     */
+    public String getCaminhoMassaDeTeste() {
+        return caminhoMassaDeTeste;
+    }
+
+    public void setCaminhoMassaDeTeste(String caminhoMassaDeTeste) {
+        this.caminhoMassaDeTeste = caminhoMassaDeTeste;
+    }
+
+    public String getNomeUnico(String nome) {
+        return nome + "-" + getUniqueSequence() + "-" + horaAtual();
+    }
+
+    private int getUniqueSequence() {
+        return sequence++;
+    }
+}

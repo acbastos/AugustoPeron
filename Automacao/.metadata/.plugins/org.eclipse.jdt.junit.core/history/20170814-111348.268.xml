@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="CadastroPessoaTest" project="CPB_AUTOMACAO" tests="1" started="1" failures="0" errors="1" ignored="0">
+  <testsuite name="br.org.cpb.TEST.CadastroPessoaTest" time="9.817">
+    <testcase name="cadastrarPessoa" classname="br.org.cpb.TEST.CadastroPessoaTest" time="9.817">
+      <error>org.openqa.selenium.NoSuchElementException: Unable to locate element with ID: usuario
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: '2.45.0', revision: '5017cb8e7ca8e37638dc3091b2440b90a1d8686f', time: '2015-02-27 09:10:26'
+System info: host: 'CPB-001451', ip: '10.67.20.41', os.name: 'Windows 8.1', os.arch: 'amd64', os.version: '6.3', java.version: '1.8.0_05'
+Driver info: driver.version: HtmlUnitDriver&#13;
+	at org.openqa.selenium.htmlunit.HtmlUnitDriver.findElementById(HtmlUnitDriver.java:960)&#13;
+	at org.openqa.selenium.By$ById.findElement(By.java:214)&#13;
+	at org.openqa.selenium.htmlunit.HtmlUnitDriver$5.call(HtmlUnitDriver.java:1648)&#13;
+	at org.openqa.selenium.htmlunit.HtmlUnitDriver$5.call(HtmlUnitDriver.java:1644)&#13;
+	at org.openqa.selenium.htmlunit.HtmlUnitDriver.implicitlyWaitFor(HtmlUnitDriver.java:1302)&#13;
+	at org.openqa.selenium.htmlunit.HtmlUnitDriver.findElement(HtmlUnitDriver.java:1644)&#13;
+	at org.openqa.selenium.htmlunit.HtmlUnitDriver.findElement(HtmlUnitDriver.java:550)&#13;
+	at br.org.cpb.PO.LoginPO.realizarLogin(LoginPO.java:27)&#13;
+	at br.org.cpb.TEST.CadastroPessoaTest.cadastrarPessoa(CadastroPessoaTest.java:44)&#13;
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)&#13;
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)&#13;
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)&#13;
+	at java.lang.reflect.Method.invoke(Method.java:483)&#13;
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)&#13;
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)&#13;
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)&#13;
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)&#13;
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)&#13;
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)&#13;
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)&#13;
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)&#13;
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)&#13;
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)&#13;
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)&#13;
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)&#13;
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)&#13;
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)&#13;
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)&#13;
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)&#13;
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)&#13;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)&#13;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)&#13;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)&#13;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)&#13;
+&#13;
+</error>
+    </testcase>
+  </testsuite>
+</testrun>

@@ -1,0 +1,43 @@
+package br.org.cpb.PO;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+
+import br.org.cpb.UTIL.MassaUtil;
+import br.org.cpb.UTIL.PaginaBase;
+
+public class TesteNavegador {
+	
+
+	@Before
+	public void antesDeTudo(){
+
+	}
+	
+	@Test
+	public void TestarNavegador() throws InterruptedException{
+    WebDriver driver = new HtmlUnitDriver();		
+   // driver.get("www.google.com");
+    //driver.getTitle();
+		
+		    
+	}
+	
+	@After
+	public void depoisDeTudo(){
+		
+		
+			
+	}
+}
+
+	
+	
+	
+	
+
+    
+

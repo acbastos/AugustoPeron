@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Implementation-Title: Spring Boot GAE Blank Project (from https://gith
+ ub.com/making/spring-boot-gae-blank)
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: augusto
+Implementation-Vendor-Id: AUTOMACAO_
+Build-Jdk: 1.8.0_05
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+Main-Class: AUTOMACAO_.CPB.App
+

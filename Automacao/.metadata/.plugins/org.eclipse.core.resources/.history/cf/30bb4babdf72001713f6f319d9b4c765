@@ -1,0 +1,297 @@
+package br.org.cpb.PO;
+
+import static org.junit.Assert.fail;
+
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.thoughtworks.selenium.Wait;
+import com.thoughtworks.selenium.webdriven.commands.WaitForCondition;
+
+import br.org.cpb.UTIL.GeradoraCPF;
+import br.org.cpb.UTIL.MassaUtil;
+import br.org.cpb.UTIL.PaginaBase;
+import br.org.cpb.UTIL.TestUtil;
+
+public class CadastroPessoaPO extends PaginaBase {
+	private GeradoraCPF geradorCpf = new GeradoraCPF();
+	private MassaUtil massa = new MassaUtil();
+	
+	
+	
+	public CadastroPessoaPO() {
+		super(driver);   
+	}
+
+	public void acessarMenuPessoa() throws InterruptedException {
+
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		// Acessando menu pessoa
+		driver.findElement(By.xpath("//div[@class='iconemobile']")).click();
+		Thread.sleep(1500);
+		driver.findElement(By.linkText("Pessoa")).click();
+		// Acessando botão Novo cadastro
+		driver.findElement(By.xpath("//span[text()='Novo Cadastro']/..")).click();
+	}
+
+	public void preenchendoAbaDocumentos() {
+
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.findElement(By.id("fDocumentos:cpf")).sendKeys(geradorCpf.geraCPFSemMask());
+		driver.findElement(By.id("fDocumentos:rg")).click();
+		driver.findElement(By.id("fDocumentos:rg")).clear();
+		driver.findElement(By.id("fDocumentos:rg")).sendKeys(massa.gerarNumeroAleatorio());
+		driver.findElement(By.id("fDocumentos:orgaoExpedidor")).clear();
+		driver.findElement(By.id("fDocumentos:orgaoExpedidor")).sendKeys("ssp");
+		new Select(driver.findElement(By.id("fDocumentos:ufOrgaoExpedidor"))).selectByVisibleText("GO");
+		driver.findElement(By.id("fDocumentos:dataEmissaoRg")).clear();
+		driver.findElement(By.id("fDocumentos:dataEmissaoRg")).sendKeys("01012000");
+		driver.findElement(By.xpath("//button/span[text()='Salvar e Continuar']")).click();
+	}
+	
+	public void preenchendoAbaDadosPessoais(String nome) throws InterruptedException{
+		
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		//Verificar mensagem de sucesso na tela
+		Assert.assertEquals("Registro salvo com sucesso", driver.findElement(By.xpath("//div[@class='ui-messages-info ui-corner-all']")).getText());
+		//Selecionando imagem
+		driver.findElement(By.xpath("//button/span[text()='Atualizar Foto']/..")).click();
+        driver.findElement(By.xpath("//input[@type='file']")).sendKeys("C:\\Users\\augusto\\Desktop\\images.jpg");
+	    //driver.findElement(By.xpath("//input[@type='file']")).sendKeys("Anexos/images.jpg");
+	    //Informando Nome
+	    driver.findElement(By.id("fDadosPessoais:nome")).clear();
+	    driver.findElement(By.id("fDadosPessoais:nome")).sendKeys(nome);
+	    //Informando sobrenome
+	    driver.findElement(By.id("fDadosPessoais:sobrenome")).clear();
+	    driver.findElement(By.id("fDadosPessoais:sobrenome")).sendKeys(massa.gerarNumeroAleatorio3());
+	    //Preenchendo nome preferencial
+	    driver.findElement(By.id("fDadosPessoais:nomePreferencial")).clear();
+	    driver.findElement(By.id("fDadosPessoais:nomePreferencial")).sendKeys("testee");
+	    //Informando e-mail
+	    driver.findElement(By.id("fDadosPessoais:email")).clear();
+	    driver.findElement(By.id("fDadosPessoais:email")).sendKeys("a@a.com");
+	    //Data de nascimento
+	    driver.findElement(By.id("fDadosPessoais:dataNascimento")).clear();
+	    driver.findElement(By.id("fDadosPessoais:dataNascimento")).sendKeys("1010");
+	    //Estado civil
+	    new Select(driver.findElement(By.id("fDadosPessoais:estadoCivil"))).selectByVisibleText("SOLTEIRO(A)");
+	    //Naturalidade UF
+	    new Select(driver.findElement(By.id("fDadosPessoais:naturalidadeUf"))).selectByVisibleText("DF");
+	    driver.findElement(By.xpath("//select[@id='fDadosPessoais:naturalidadeUf']/option[8]")).click();
+	    //Naturalidade Cidade
+	    Thread.sleep(1000);
+	    new Select(driver.findElement(By.id("fDadosPessoais:naturalidadeCidade"))).selectByVisibleText("BRASÍLIA");
+	    //Gênero
+	   // driver.findElement(By.xpath("/html/body/div[5]/table/tbody/tr[1]/td[2]/div/div[2]/form/span/div[2]/div[11]/table/tbody/tr[1]/td[2]/table/tbody/tr/td[1]/div/div[2]")).click();
+	    //Nome da mãe
+	    driver.findElement(By.id("fDadosPessoais:nomeMae")).clear();
+	    driver.findElement(By.id("fDadosPessoais:nomeMae")).sendKeys(massa.geraNomePessoa());
+	    //Botão Salvar e continuar
+	    driver.findElement(By.xpath("//button/span[text()='Salvar e Continuar']/..")).click();
+	    
+	}
+
+	public void preenchendoAbaDadosProfissionais() throws InterruptedException{
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		//Validar mensagem de sucesso
+		Assert.assertEquals("Registro salvo com sucesso", driver.findElement(By.xpath("//div[@class='ui-messages-info ui-corner-all']")).getText());
+		//Função
+		new Select(driver.findElement(By.id("fDadosProfissionais:funcao"))).selectByVisibleText("ATLETA");
+	    //Clube
+		Thread.sleep(1000);
+		driver.findElement(By.id("fDadosProfissionais:clubes_input")).sendKeys("Clube do bol");
+		Thread.sleep(1000);
+		driver.findElement(By.id("fDadosProfissionais:clubes_input")).sendKeys(Keys.ENTER);
+	    //Confederação
+		Thread.sleep(1000);
+	    driver.findElement(By.id("fDadosProfissionais:confederacoes_input")).sendKeys("comit");
+	    Thread.sleep(1000);
+	    driver.findElement(By.id("fDadosProfissionais:confederacoes_input")).sendKeys(Keys.ENTER);
+	    //Formação
+	    new Select(driver.findElement(By.id("fDadosProfissionais:formacao"))).selectByVisibleText("ENSINO FUNDAMENTAL INCOMPLETO");
+	    //Pis
+	    driver.findElement(By.id("fDadosProfissionais:pis")).sendKeys(massa.gerarNumeroAleatorio());
+	    //Registro profissional
+	    driver.findElement(By.id("fDadosProfissionais:registroProfissional")).clear();
+	    driver.findElement(By.id("fDadosProfissionais:registroProfissional")).sendKeys(massa.gerarNumeroAleatorio());
+//	    driver.findElement(By.id("fDadosProfissionais:inscricaoAutonomo")).clear();
+//	    driver.findElement(By.id("fDadosProfissionais:inscricaoAutonomo")).sendKeys("dsadsadas");
+	    //SDMS
+	    driver.findElement(By.id("fDadosProfissionais:sdms")).clear();
+	    driver.findElement(By.id("fDadosProfissionais:sdms")).sendKeys(massa.gerarNumeroAleatorio());
+	    //Modalidade
+	    new Select(driver.findElement(By.id("fDadosProfissionais:modalidade1"))).selectByVisibleText("ATLETISMO");
+	    //Botão Salvar e continuar
+	    driver.findElement(By.xpath("//button/span[text()='Salvar e Continuar']/..")).click();
+	}
+	
+	public void preenchendoAbaDeficiencia(){
+		
+		driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS);
+		//Validar mensagem de sucesso
+		Assert.assertEquals("Dados profissionais salvo com sucesso", driver.findElement(By.xpath("//div[@class='ui-messages-info ui-corner-all']")).getText());
+		driver.findElement(By.xpath("/html/body/div[5]/table/tbody/tr/td[2]/div/div[2]/form/fieldset/table/tbody/tr[1]/td[2]/table/tbody/tr/td[1]/div/div[2]")).click();
+	    new Select(driver.findElement(By.id("fDeficiencia:tipoDeficiencia"))).selectByVisibleText("FISICA");
+	    driver.findElement(By.xpath("//button/span[text()='Salvar e Continuar']/..")).click();
+		
+	}
+	
+	public void preenchendoAbaDadosDeContato() throws InterruptedException{
+		
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		//Validar mensagem de sucesso
+		Assert.assertEquals("Dados de deficiência salvos com sucesso", driver.findElement(By.xpath("//div[@class='ui-messages-info ui-corner-all']")).getText());
+		//Cep
+		driver.findElement(By.id("fDadosContato:cep")).clear();
+		driver.findElement(By.id("fDadosContato:cep")).sendKeys("71936250");
+        //Endereço
+		driver.findElement(By.id("fDadosContato:endereco")).clear();
+		driver.findElement(By.id("fDadosContato:endereco")).sendKeys(massa.geraTexto(2));
+		//Numero
+		driver.findElement(By.id("fDadosContato:numero")).clear();
+		driver.findElement(By.id("fDadosContato:numero")).sendKeys(massa.gerarNumeroAleatorio2());
+		//Bairro
+		driver.findElement(By.id("fDadosContato:bairro")).clear();
+		driver.findElement(By.id("fDadosContato:bairro")).sendKeys(massa.geraTexto(2));
+		//Estado
+		new Select(driver.findElement(By.id("fDadosContato:estados"))).selectByVisibleText("DISTRITO FEDERAL");
+		//Cidade
+		Thread.sleep(1000);
+		new Select(driver.findElement(By.id("fDadosContato:cidades"))).selectByVisibleText("BRASÍLIA");
+		//Aeroporto
+		Thread.sleep(1000);
+		driver.findElement(By.id("fDadosContato:aeroportos_input")).clear();
+		driver.findElement(By.id("fDadosContato:aeroportos_input")).sendKeys("bras");
+		Thread.sleep(1000);
+		driver.findElement(By.id("fDadosContato:aeroportos_input")).sendKeys(Keys.ENTER);
+		//Telefone Celular
+		driver.findElement(By.id("fDadosContato:telefoneCelular")).clear();
+		driver.findElement(By.id("fDadosContato:telefoneCelular")).sendKeys(massa.gerarNumeroAleatorio());
+		
+		//Botão salvar e continuar
+		driver.findElement(By.xpath("//button/span[text()='Salvar e Continuar']/..")).click();
+		
+	}
+	
+	public void preenchendoAbaDadosBancarios() throws InterruptedException{
+		
+		driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS);
+		//Validar mensagem de sucesso
+		Assert.assertEquals("Dados de contato salvos com sucesso", driver.findElement(By.xpath("//div[@class='ui-messages-info ui-corner-all']")).getText());
+		new Select(driver.findElement(By.id("fDadosBancarios:banco"))).selectByVisibleText("BANCO ABC BRASIL S.A.");
+		Thread.sleep(1000);
+		new Select(driver.findElement(By.id("fDadosBancarios:tipoContaBancaria"))).selectByVisibleText("CONTA CORRENTE");
+		Thread.sleep(1000);
+		driver.findElement(By.id("fDadosBancarios:agencia")).clear();
+		driver.findElement(By.id("fDadosBancarios:agencia")).sendKeys(massa.gerarNumeroAleatorio2());
+		driver.findElement(By.id("fDadosBancarios:dvAgencia")).clear();
+		driver.findElement(By.id("fDadosBancarios:dvAgencia")).sendKeys(massa.gerarNumeroAleatorio3());
+		driver.findElement(By.id("fDadosBancarios:conta")).clear();
+		driver.findElement(By.id("fDadosBancarios:conta")).sendKeys(massa.gerarNumeroAleatorio2());
+		driver.findElement(By.id("fDadosBancarios:dvConta")).clear();
+		driver.findElement(By.id("fDadosBancarios:dvConta")).sendKeys(massa.gerarNumeroAleatorio());
+		driver.findElement(By.xpath("//button/span[text()='Adicionar conta bancária']")).click();
+		Thread.sleep(1000);
+		//Validar mensagem de sucesso
+		Assert.assertEquals("Conta bancária adicionada com sucesso", driver.findElement(By.xpath("//div[@class='ui-messages-info ui-corner-all']")).getText());
+		driver.findElement(By.xpath("//button/span[text()='Continuar']/..")).click();
+		
+	}
+	
+	public void preenchendoAbaDependentes(){
+		
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//div/label[text()=' Possui dependente?']")));
+		driver.findElement(By.xpath("//button/span[text()='Continuar']/..")).click();
+		
+	}
+	
+	public void preenchendoAbaPassaporte(){
+		
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//div/label[text()=' Possui passaporte?']")));
+		driver.findElement(By.xpath("//button/span[text()='Continuar']/..")).click();
+		
+	}
+	
+	public void preenchendoAbaVistos(){
+		
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//div/label[text()=' Possui visto?']")));
+		driver.findElement(By.xpath("//button/span[text()='Continuar']/..")).click();
+		
+	}
+	
+	public void preenchendoAbaUniformes(){
+		
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//div/label[text()=' Possui visto?']")));
+		driver.findElement(By.xpath("//button/span[text()='Salvar e Continuar']/..")).click();
+		
+	}
+	
+	public void preenchendoAbaEquipamentos(){
+		
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//div/label[text()='Possui algum equipamento?']")));
+		driver.findElement(By.xpath("//button/span[text()='Continuar']/..")).click();
+		
+	}
+	
+	public void preenchendoAbaClassificacao(){
+		
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//div/span[text()='Classificações Esportivas']")));
+		driver.findElement(By.xpath("//button/span[text()='Continuar']/..")).click();
+		
+	}
+	
+	public void preenchendoAbaDadosComplementares(){
+		
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//div/span[text()='Dados Complementares']")));
+		driver.findElement(By.xpath("//button/span[text()='Salvar e Continuar']/..")).click();
+		
+	}
+	
+	public void preenchendoAbaOcorrencias(){
+		
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//div/span[text()='Ocorrências']")));
+		driver.findElement(By.xpath("//button/span[text()='Continuar']/..")).click();
+		
+	}
+	
+	public void preenchendoAbaAnexos(){
+		
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//div/span[text()='Anexos']")));
+		driver.findElement(By.xpath("//button/span[text()='Continuar']/..")).click();
+		
+	}
+	
+	public void finalizarCadastro(){
+
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//div/span[text()='Perfil']")));
+		driver.findElement(By.xpath("//button/span[text()='Finalizar Cadastro']/..")).click();
+		//Validar mensagem de sucesso
+		Assert.assertEquals("Cadastro finalizado com sucesso", driver.findElement(By.xpath("//div[@class='ui-messages-info ui-corner-all']")).getText());
+		
+	}
+	
+	
+	
+	
+	
+	
+}

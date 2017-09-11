@@ -1,0 +1,52 @@
+package br.org.cpb.TEST;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+
+import br.org.cpb.PO.CadastroPessoaPO;
+import br.org.cpb.PO.ClassificacaoEsportivaPO;
+import br.org.cpb.PO.LoginPO;
+import br.org.cpb.PO.RetificarProvasPO;
+import br.org.cpb.UTIL.MassaUtil;
+import br.org.cpb.UTIL.BaseUtil;
+
+public class RetificarProvasTEST {
+	
+	LoginPO login;
+	BaseUtil paginaBase;
+	WebDriver driver;
+	RetificarProvasPO retificar;
+	
+	@Before
+	public void antesDeTudo(){
+		paginaBase = new BaseUtil(driver);
+		login = new LoginPO();
+		retificar = new RetificarProvasPO();
+		
+		
+		
+	}
+	
+	@Test
+	public void cadastrarPessoa() throws InterruptedException{
+		
+		    //Gerando nome para teste
+		    //String nome = "Augusto Teste" + massa.gerarNumeroAleatorio3();
+			paginaBase.abreNavegadorChrome();
+			paginaBase.acessarUrl("http://10.67.20.55:8080/competicao-web/");
+			login.realizarLogin("sup_atletismo", "12345");
+			retificar.retificarProva();
+			
+
+	}
+	
+	@After
+	public void depoisDeTudo(){
+		
+		
+			
+	}
+
+}

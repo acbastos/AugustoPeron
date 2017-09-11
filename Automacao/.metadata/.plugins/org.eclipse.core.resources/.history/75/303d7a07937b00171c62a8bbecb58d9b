@@ -1,0 +1,26 @@
+package br.org.cpb.PO;
+
+import org.openqa.selenium.By;
+
+import com.thoughtworks.selenium.webdriven.commands.Click;
+
+import br.org.cpb.UTIL.PaginaBase;
+
+public class RetificarProvasPO extends PaginaBase {
+	
+	public RetificarProvasPO(){
+		super(driver);
+	}
+	
+	
+	public void retificarProva() throws InterruptedException{
+		
+		driver.findElement(By.id("home:eventosInscricaoFinalizada:0:btnSelecionarEvento")).click();
+		Thread.sleep(1000);
+		//Acessar o menu consulta
+		driver.findElement(By.xpath("/html/body/div[3]/form/div/ul/li[4]/a/span[2]")).click();
+		Thread.sleep(1000);
+		
+	}
+
+}

@@ -25,7 +25,7 @@ import br.org.cpb.UTIL.BaseUtil;
 import br.org.cpb.UTIL.TestUtil;
 
 
-//xxx
+//xxxx
 
 public class CadastroPessoaPO extends BaseUtil {
 	private GeradoraCPF geradorCpf = new GeradoraCPF();
